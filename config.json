@@ -11,8 +11,7 @@
         "protocol": "http",
         "domain": "",
         "port": 8080,
-        "httpsPort": 8081,
         "timeout": 10,
-        "maxUploadSize": 25
+        "maxUploadSize": 1
     }
 }
