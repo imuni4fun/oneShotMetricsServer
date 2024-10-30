@@ -121,15 +121,15 @@ func handleGetMetrics(response *goyave.Response, request *goyave.Request) {
 	logDebugf("method : %v\n", request.Method())
 	logDebugf("path   : %v\n", request.URL().Path)
 	logDebugf("remote : %v\n", request.RemoteAddress())
+	scraper := getScraperFromIP(getIPAdress(request.Request()))
+	logInfof("scraper : %v\n", scraper)
 	for k, v := range request.Header() {
-		logDebugf("header : %s = %s\n", k, v)
+		logDebugf("header  : %s = %s\n", k, v)
 	}
-	logInfof("scraper: %v\n", getIPAdress(request.Request()))
 	leadIn := `// # HELP events_to_metrics Events registered generically to the conversion service
 // # scraper ID: %s
 // # TYPE events_to_metrics guage
 // events_to_metrics{method="post",code="200"} $value $timestamp`
-	scraper := request.RemoteAddress()
 	metrics := cache.Scrape(scraper)
 	sb := strings.Builder{}
 	fmt.Fprintf(&sb, leadIn, scraper)
@@ -155,6 +155,16 @@ func getIPAdress(request *http.Request) string {
 		}
 	}
 	return request.RemoteAddr
+}
+
+func getScraperFromIP(str string) string {
+	if addr, err := net.ResolveUDPAddr("udp", str); err == nil {
+		return addr.String()
+	} else if addr, err := net.ResolveIPAddr("ip", str); err == nil {
+		return addr.String()
+	} else {
+		return ""
+	}
 }
 
 func logErrorf(format string, args ...any) {

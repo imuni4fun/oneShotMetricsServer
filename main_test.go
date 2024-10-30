@@ -99,6 +99,19 @@ func TestScrape(t *testing.T) {
 	assert.True(t, found, "did not find expected metric")
 }
 
+func TestParseScraper(t *testing.T) {
+	testStrings := []string{
+		"203.0.113.0",
+		"203.0.113.0:100",
+	}
+	for _, str := range testStrings {
+		scraper := getScraperFromIP(str)
+		assert.NotEqual(t, "<nil>", scraper, "Parse should not fail for %s", str)
+		assert.NotEqual(t, "", scraper, "Parse should not fail for %s", str)
+		logInfof("address %s --> %s", str, scraper)
+	}
+}
+
 func httpPostEvent(content map[string]string) {
 	cfg, err := config.Load()
 	if err != nil {
