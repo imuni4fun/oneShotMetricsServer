@@ -15,6 +15,7 @@ build-docker-verbose:
 	docker build -t $(GHCR):$(GIT_TAG) --no-cache --progress=plain .
 
 push-docker: build-docker
+	cat ~/.github/tokens/oneShotMetricsServer | docker login ghcr.io -u USERNAME --password-stdin
 	docker push $(GHCR):$(GIT_TAG)
 
 test: setup
