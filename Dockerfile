@@ -12,6 +12,9 @@ RUN go build .
 
 
 FROM alpine:3.20 as runner
+LABEL org.opencontainers.image.source=https://github.com/imuni4fun/oneShotMetricsServer
+LABEL org.opencontainers.image.description="Runner image for Events to Metrics server"
+LABEL org.opencontainers.image.licenses=GPLv3
 WORKDIR /app
 COPY --from=builder /app/oneShotMetricsServer .
 ENTRYPOINT [ "oneShotMetricsServer" ]

@@ -1,4 +1,5 @@
 GIT_TAG:=$(shell git describe --tags --dirty --always)
+GHCR:=ghcr.io/imuni4fun/one_shot_metrics_server
 
 setup:
 	go get goyave.dev/goyave/v5@v5.4.0
@@ -8,13 +9,13 @@ build: setup
 	go build .
 
 build-docker:
-	docker build -t imuni4fun/one_shot_metrics_server:$(GIT_TAG) .
+	docker build -t $(GHCR):$(GIT_TAG) .
 
 build-docker-verbose:
-	docker build -t imuni4fun/one_shot_metrics_server:$(GIT_TAG) --no-cache --progress=plain .
+	docker build -t $(GHCR):$(GIT_TAG) --no-cache --progress=plain .
 
 push-docker: build-docker
-	docker push imuni4fun/one_shot_metrics_server:$(GIT_TAG)
+	docker push $(GHCR):$(GIT_TAG)
 
 test: setup
 	go test . -count 1 -v
