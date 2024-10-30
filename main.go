@@ -133,6 +133,11 @@ func handleGetMetrics(response *goyave.Response, request *goyave.Request) {
 	metrics := cache.Scrape(scraper)
 	sb := strings.Builder{}
 	fmt.Fprintf(&sb, leadIn, scraper)
+	counts := cache.GetScraperEntryCounts()
+	now := time.Now().UnixMilli()
+	for k, v := range counts {
+		fmt.Fprintf(&sb, `\nevents_to_metrics_scraper_counts{scraper="%s"} %d %d`, k, v, now)
+	}
 	for k, v := range metrics {
 		fmt.Fprintf(&sb, "\n%s %s", k, v)
 	}
