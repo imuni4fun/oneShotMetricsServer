@@ -14,7 +14,7 @@ build-docker-verbose:
 	docker build -t imuni4fun/one_shot_metrics_server:$(GIT_TAG) --no-cache --progress=plain .
 
 push-docker: build-docker
-	docker build -t imuni4fun/one_shot_metrics_server:$(GIT_TAG) .
+	docker push imuni4fun/one_shot_metrics_server:$(GIT_TAG)
 
 test: setup
 	go test . -count 1 -v
