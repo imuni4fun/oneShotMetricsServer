@@ -1,4 +1,4 @@
-GIT_TAG:=$(shell git describe --tags)
+GIT_TAG:=$(shell git describe --tags --dirty --always)
 
 setup:
 	go get goyave.dev/goyave/v5@v5.4.0
