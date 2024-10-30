@@ -69,13 +69,18 @@ func runServer(ctx context.Context) {
 }
 
 func registerRoutes(server *goyave.Server, router *goyave.Router) {
-	router.Get("/", handleHome)
+	router.Get("/", handleGetHome)
 	router.Post("/event", handlePostEvent)
 	router.Get("/metrics", handleGetMetrics)
+	router.Get("/healthz", handleGetHealthz)
 }
 
-func handleHome(response *goyave.Response, request *goyave.Request) {
-	response.String(http.StatusOK, "home")
+func handleGetHome(response *goyave.Response, request *goyave.Request) {
+	response.String(http.StatusOK, "Welcome to Events-to-metrics!")
+}
+
+func handleGetHealthz(response *goyave.Response, request *goyave.Request) {
+	response.String(http.StatusOK, "I'm not quite dead!")
 }
 
 func handlePostEvent(response *goyave.Response, request *goyave.Request) {
