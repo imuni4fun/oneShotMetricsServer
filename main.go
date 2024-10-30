@@ -19,6 +19,17 @@ import (
 var cache = fadingMetricsCache.FadingMetricsCache{}
 
 func main() {
+	switch os.Getenv("LOG_LEVEL") {
+	case "ERROR":
+		slog.SetLogLoggerLevel(slog.LevelError)
+	case "WARN":
+		slog.SetLogLoggerLevel(slog.LevelWarn)
+	case "INFO":
+		slog.SetLogLoggerLevel(slog.LevelInfo)
+	case "DEBUG":
+		slog.SetLogLoggerLevel(slog.LevelDebug)
+	default:
+	}
 	runServer(context.Background())
 }
 
