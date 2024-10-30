@@ -15,7 +15,7 @@ FROM alpine:3.20 as runner
 LABEL org.opencontainers.image.source=https://github.com/imuni4fun/oneShotMetricsServer
 LABEL org.opencontainers.image.description="Runner image for Events to Metrics server"
 LABEL org.opencontainers.image.licenses=GPLv3
+COPY --from=builder /app/oneShotMetricsServer /app/config.json /app/
 WORKDIR /app
-COPY --from=builder /app/oneShotMetricsServer .
-ENTRYPOINT [ "oneShotMetricsServer" ]
+ENTRYPOINT [ "./oneShotMetricsServer" ]
 EXPOSE 8080
