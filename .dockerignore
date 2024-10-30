@@ -1,0 +1,6 @@
+pkg
+.dockerignore
+.gitignore
+Dockerfile
+LICENSE
+oneShotMetricsServer

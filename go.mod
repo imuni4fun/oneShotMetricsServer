@@ -20,7 +20,6 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	gorm.io/gorm v1.25.12 // indirect
 	goyave.dev/copier v0.4.3 // indirect
-	goyave.dev/goyave/v4 v4.4.11 // indirect
 	goyave.dev/goyave/v5 v5.4.0 // indirect
 	honnef.co/go/tools v0.5.1 // indirect
 )
