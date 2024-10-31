@@ -110,6 +110,7 @@ func handlePostEvent(response *goyave.Response, request *goyave.Request) {
 	for k, v := range request.Request().Form {
 		if floatVal, useAsValue := tryParseValueAsFloat(k, v); useAsValue { // interpret as value
 			value = floatVal
+			logDebugf("value : %v\n", floatVal)
 		} else { // interpret as label
 			labels[k] = v[0]
 			logDebugf("label : %v: %v\n", k, v[0])
@@ -125,7 +126,7 @@ func handlePostEvent(response *goyave.Response, request *goyave.Request) {
 func tryParseValueAsFloat(field string, value []string) (float64, bool) {
 	if field != "value" || len(value) != 1 {
 		return 0, false
-	} else if val, err := strconv.ParseFloat(value[0], 64); err != nil {
+	} else if val, err := strconv.ParseFloat(value[0], 64); err == nil {
 		return val, true
 	} else {
 		return 0, false

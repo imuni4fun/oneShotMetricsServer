@@ -58,6 +58,42 @@ func TestPost(t *testing.T) {
 }
 
 // description of test
+func TestSetValue(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	go func() {
+		runServer(ctx)
+	}()
+	time.Sleep(1 * time.Second)
+
+	httpGetMetrics() // register scraper
+	httpPostEvent(map[string]string{
+		"type":   "testResult",
+		"result": "pass",
+		"value":  "42.5",
+	})
+	result := httpGetMetrics()
+
+	foundLabel := false
+	foundValue := false
+	for _, str := range result {
+		if strings.Contains(str, `value="42.5"`) {
+			logInfof("found label: %s", str)
+			foundLabel = true
+			continue
+		}
+		if strings.Contains(str, `} 42.5`) {
+			logInfof("found value: %s", str)
+			foundValue = true
+			break
+		}
+	}
+	assert.False(t, foundLabel, "should not find data as label")
+	assert.True(t, foundValue, "should find data as value")
+}
+
+// description of test
 func TestScrape(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
