@@ -101,15 +101,14 @@ func TestScrape(t *testing.T) {
 
 func TestParseScraper(t *testing.T) {
 	testStrings := map[string]string{
-		"203.0.113.0":          "203.0.113.0",
-		"10.133.107.114:35282": "10.133.107.114",
+		"203.0.113.0":                                   "203.0.113.0",
+		"10.133.107.114:35282":                          "10.133.107.114",
+		"2001:db8:3333:4444:5555:6666:7777:8888":        "2001:db8:3333:4444:5555:6666:7777:8888",
+		"[2001:db8:3333:4444:5555:6666:7777:8888]:8080": "2001:db8:3333:4444:5555:6666:7777:8888",
+		"[2001:db8:0::1]:80":                            "2001:db8:0::1",
+		"2001:db8:0::1":                                 "2001:db8:0::1",
 	}
-	failStrings := []string{
-		"2001:db8:3333:4444:5555:6666:7777:8888",
-		"[2001:db8:3333:4444:5555:6666:7777:8888]:8080",
-		"[2001:db8:0::1]:80",
-		"2001:db8:0::1",
-	}
+	failStrings := []string{}
 	for k, v := range testStrings {
 		parsed := getScraperFromIP(k)
 		assert.NotEqual(t, "<nil>", parsed, "Parse should not fail for %s", k)
@@ -120,7 +119,7 @@ func TestParseScraper(t *testing.T) {
 	for _, str := range failStrings {
 		assert.Panicsf(t, func() {
 			_ = getScraperFromIP(str)
-		}, "Unsupported address %s should panic")
+		}, "Unsupported address %s should panic", str)
 		logInfof("address %s --> should panic", str)
 	}
 }

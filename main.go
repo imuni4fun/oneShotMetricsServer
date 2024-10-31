@@ -126,20 +126,25 @@ func handleGetMetrics(response *goyave.Response, request *goyave.Request) {
 	for k, v := range request.Header() {
 		logDebugf("header  : %s = %s\n", k, v)
 	}
-	leadIn := `// # HELP events_to_metrics Events registered generically to the conversion service
-// # scraper ID: %s
-// # TYPE events_to_metrics guage
-// events_to_metrics{method="post",code="200"} $value $timestamp`
-	metrics := cache.Scrape(scraper)
 	sb := strings.Builder{}
-	fmt.Fprintf(&sb, leadIn, scraper)
-	counts := cache.GetScraperEntryCounts()
 	now := time.Now().UnixMilli()
-	for k, v := range counts {
-		fmt.Fprintf(&sb, "\nevents_to_metrics_scraper_counts{scraper=\"%s\"} %d %d", k, v, now)
+	// fmt.Fprintf(&sb, `# scraper ID: %s\n`, scraper)
+	// events_to_metrics{method="post",code="200"} $value $timestamp
+	metrics := cache.Scrape(scraper)
+	if len(metrics) > 0 {
+		fmt.Fprintf(&sb, "# HELP events_to_metrics Events registered generically to the conversion service\n")
+		fmt.Fprintf(&sb, "# TYPE events_to_metrics gauge\n")
+		for k, v := range metrics {
+			fmt.Fprintf(&sb, "%s %s\n", k, v)
+		}
 	}
-	for k, v := range metrics {
-		fmt.Fprintf(&sb, "\n%s %s", k, v)
+	counts := cache.GetScraperEntryCounts()
+	if len(counts) > 0 {
+		fmt.Fprintf(&sb, "# HELP events_to_metrics_scraper_counts Scrapers currently being tracked and the events they have yet to collect\n")
+		fmt.Fprintf(&sb, "# TYPE events_to_metrics_scraper_counts gauge\n")
+		for k, v := range counts {
+			fmt.Fprintf(&sb, "events_to_metrics_scraper_counts{scraper=\"%s\"} %d %d\n", k, v, now)
+		}
 	}
 	response.String(http.StatusOK, sb.String())
 	response.Status(http.StatusOK)
@@ -162,7 +167,8 @@ func getScraperFromIP(str string) string {
 		s := strings.Split(str, ":")
 		return s[0]
 	} else { //IPv6
-		panic("IPv6 scrapers are not yet supported")
+		s := strings.Split(str, "]:")
+		return strings.ReplaceAll(s[0], "[", "")
 	}
 }
 
