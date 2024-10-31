@@ -9,6 +9,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"sync/atomic"
 	"time"
 
 	"github.com/imuni4fun/fadingMetricsCache"
@@ -18,6 +19,7 @@ import (
 )
 
 var cache = fadingMetricsCache.FadingMetricsCache{}
+var eventCounter atomic.Int64
 
 func main() {
 	switch os.Getenv("LOG_LEVEL") {
@@ -120,6 +122,7 @@ func handlePostEvent(response *goyave.Response, request *goyave.Request) {
 		logDebugf("header : %s = %s\n", k, v)
 	}
 	cache.RegisterValue("events_to_metrics", labels, value)
+	eventCounter.Add(1)
 	response.Status(http.StatusOK)
 }
 
@@ -147,20 +150,23 @@ func handleGetMetrics(response *goyave.Response, request *goyave.Request) {
 	now := time.Now().UnixMilli()
 	// fmt.Fprintf(&sb, `# scraper ID: %s\n`, scraper)
 	// events_to_metrics{method="post",code="200"} $value $timestamp
-	metrics := cache.Scrape(scraper)
-	if len(metrics) > 0 {
-		fmt.Fprintf(&sb, "# HELP events_to_metrics Events registered generically to the conversion service\n")
-		fmt.Fprintf(&sb, "# TYPE events_to_metrics gauge\n")
-		for k, v := range metrics {
-			fmt.Fprintf(&sb, "%s %s\n", k, v)
-		}
-	}
+	fmt.Fprintf(&sb, "# HELP events_to_metrics_event_count Scrapers currently being tracked and the events they have yet to collect\n")
+	fmt.Fprintf(&sb, "# TYPE events_to_metrics_event_count counter\n")
+	fmt.Fprintf(&sb, "events_to_metrics_event_count{} %d %d\n", eventCounter.Load(), now)
 	counts := cache.GetScraperEntryCounts()
 	if len(counts) > 0 {
 		fmt.Fprintf(&sb, "# HELP events_to_metrics_scraper_counts Scrapers currently being tracked and the events they have yet to collect\n")
 		fmt.Fprintf(&sb, "# TYPE events_to_metrics_scraper_counts gauge\n")
 		for k, v := range counts {
 			fmt.Fprintf(&sb, "events_to_metrics_scraper_counts{scraper=\"%s\"} %d %d\n", k, v, now)
+		}
+	}
+	metrics := cache.Scrape(scraper)
+	if len(metrics) > 0 {
+		fmt.Fprintf(&sb, "# HELP events_to_metrics Events registered generically to the conversion service\n")
+		fmt.Fprintf(&sb, "# TYPE events_to_metrics gauge\n")
+		for k, v := range metrics {
+			fmt.Fprintf(&sb, "%s %s\n", k, v)
 		}
 	}
 	response.String(http.StatusOK, sb.String())
