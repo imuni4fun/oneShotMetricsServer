@@ -100,15 +100,28 @@ func TestScrape(t *testing.T) {
 }
 
 func TestParseScraper(t *testing.T) {
-	testStrings := []string{
-		"203.0.113.0",
-		"203.0.113.0:100",
+	testStrings := map[string]string{
+		"203.0.113.0":          "203.0.113.0",
+		"10.133.107.114:35282": "10.133.107.114",
 	}
-	for _, str := range testStrings {
-		scraper := getScraperFromIP(str)
-		assert.NotEqual(t, "<nil>", scraper, "Parse should not fail for %s", str)
-		assert.NotEqual(t, "", scraper, "Parse should not fail for %s", str)
-		logInfof("address %s --> %s", str, scraper)
+	failStrings := []string{
+		"2001:db8:3333:4444:5555:6666:7777:8888",
+		"[2001:db8:3333:4444:5555:6666:7777:8888]:8080",
+		"[2001:db8:0::1]:80",
+		"2001:db8:0::1",
+	}
+	for k, v := range testStrings {
+		parsed := getScraperFromIP(k)
+		assert.NotEqual(t, "<nil>", parsed, "Parse should not fail for %s", k)
+		assert.NotEqual(t, "", parsed, "Parse should not fail for %s", k)
+		assert.Equal(t, v, parsed, "Parse for %s should return %s, not %s", k, v, parsed)
+		logInfof("address %s --> %s", k, parsed)
+	}
+	for _, str := range failStrings {
+		assert.Panicsf(t, func() {
+			_ = getScraperFromIP(str)
+		}, "Unsupported address %s should panic")
+		logInfof("address %s --> should panic", str)
 	}
 }
 

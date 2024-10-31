@@ -158,13 +158,17 @@ func getIPAdress(request *http.Request) string {
 }
 
 func getScraperFromIP(str string) string {
-	if addr, err := net.ResolveUDPAddr("udp", str); err == nil {
-		return addr.String()
-	} else if addr, err := net.ResolveIPAddr("ip", str); err == nil {
-		return addr.String()
-	} else {
-		return ""
+	if strings.Count(str, ".") == 3 { // IPv4
+		s := strings.Split(str, ":")
+		return s[0]
+	} else { //IPv6
+		panic("IPv6 scrapers are not yet supported")
 	}
+}
+
+func logFatalf(format string, args ...any) {
+	slog.Error(fmt.Sprintf(format, args...))
+	os.Exit(1)
 }
 
 func logErrorf(format string, args ...any) {
