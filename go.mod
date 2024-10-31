@@ -9,7 +9,7 @@ require (
 	github.com/go-errors/errors v1.5.1 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/imdario/mergo v0.3.15 // indirect
-	github.com/imuni4fun/fadingMetricsCache v0.0.2 // indirect
+	github.com/imuni4fun/fadingMetricsCache v0.0.4 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect

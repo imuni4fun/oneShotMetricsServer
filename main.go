@@ -7,6 +7,7 @@ import (
 	"net"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 
@@ -105,15 +106,30 @@ func handlePostEvent(response *goyave.Response, request *goyave.Request) {
 	}
 	logDebugf("labels : %v\n", request.Request().Form)
 	labels := map[string]string{}
+	value := 1.0
 	for k, v := range request.Request().Form {
-		labels[k] = v[0]
-		logDebugf("label : %v: %v\n", k, v[0])
+		if floatVal, useAsValue := tryParseValueAsFloat(k, v); useAsValue { // interpret as value
+			value = floatVal
+		} else { // interpret as label
+			labels[k] = v[0]
+			logDebugf("label : %v: %v\n", k, v[0])
+		}
 	}
 	for k, v := range request.Header() {
 		logDebugf("header : %s = %s\n", k, v)
 	}
-	cache.RegisterValue("events_to_metrics", labels, 1)
+	cache.RegisterValue("events_to_metrics", labels, value)
 	response.Status(http.StatusOK)
+}
+
+func tryParseValueAsFloat(field string, value []string) (float64, bool) {
+	if field != "value" || len(value) != 1 {
+		return 0, false
+	} else if val, err := strconv.ParseFloat(value[0], 64); err != nil {
+		return val, true
+	} else {
+		return 0, false
+	}
 }
 
 func handleGetMetrics(response *goyave.Response, request *goyave.Request) {

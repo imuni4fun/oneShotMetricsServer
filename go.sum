@@ -17,6 +17,10 @@ github.com/imuni4fun/fadingMetricsCache v0.0.1 h1:giAokTUKd5WFWksAvrkqJnLNjqZRI1
 github.com/imuni4fun/fadingMetricsCache v0.0.1/go.mod h1:gCFq8NZ6GO4kwd8ZaoHmSXBHHkrZevjxDsKumPijC8U=
 github.com/imuni4fun/fadingMetricsCache v0.0.2 h1:c5ArH1v1dr/vKxWmcxtcObPQOAxN7lph/Hy1pTx0RYg=
 github.com/imuni4fun/fadingMetricsCache v0.0.2/go.mod h1:gCFq8NZ6GO4kwd8ZaoHmSXBHHkrZevjxDsKumPijC8U=
+github.com/imuni4fun/fadingMetricsCache v0.0.3 h1:NBhwSgyw6DFXu9SXR+moOgAfk9yJvbVIVVyHIqyueHA=
+github.com/imuni4fun/fadingMetricsCache v0.0.3/go.mod h1:gCFq8NZ6GO4kwd8ZaoHmSXBHHkrZevjxDsKumPijC8U=
+github.com/imuni4fun/fadingMetricsCache v0.0.4 h1:270zBkaHPFY4OWYlZ0CMhfuS5k5S0XsYDiOJeNN1hEw=
+github.com/imuni4fun/fadingMetricsCache v0.0.4/go.mod h1:gCFq8NZ6GO4kwd8ZaoHmSXBHHkrZevjxDsKumPijC8U=
 github.com/jinzhu/inflection v1.0.0 h1:K317FqzuhWc8YvSVlFMCCUb36O/S9MCKRDI7QkRKD/E=
 github.com/jinzhu/inflection v1.0.0/go.mod h1:h+uFLlag+Qp1Va5pdKtLDYj+kHp5pxUVkryuEj+Srlc=
 github.com/jinzhu/now v1.1.5 h1:/o9tlHleP7gOFmsnYNz3RGnqzefHA47wQpKrrdTIwXQ=
