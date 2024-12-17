@@ -4,6 +4,6 @@ description: A Helm chart for oneShotMetricsServer deployment to Kubernetes
 type: application
 version: "0.0.2"
 appVersion: "0.1.13"
-icon: https://raw.githubusercontent.com/imuni4fun/oneShotMetricsServer/refs/heads/main/logo.png
+icon: https://imuni4fun.github.io/oneShotMetricsServer/logo.png
 maintainers:
   - name: Jason Keller
