@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/name: {{ .Values.serviceName | required }}
+  namespace: {{ .Values.serviceNamespace | required }}
+  name: {{ .Values.serviceName | required }}
+spec:
+  replicas: 1
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ .Values.serviceName | required }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ .Values.serviceName | required }}
+    spec:
+      containers:
+      - image: "{{ .Values.server.image | required }}:{{ .Values.server.tag | required }}"
+        env:
+        - name: LOG_LEVEL
+          value: {{ .Values.server.logLevel | required }}
+        imagePullPolicy: IfNotPresent
+        name: web-server
+        livenessProbe:
+          failureThreshold: 5
+          httpGet:
+            path: /healthz
+            port: metrics
+          initialDelaySeconds: 10
+          periodSeconds: 60
+          timeoutSeconds: 10
+        ports:
+        - containerPort: {{ .Values.server.port | required }}
+          name: metrics
+          protocol: TCP
+        resources:
+          {{- toYaml .Values.server.resources | required | nindent 10 }}

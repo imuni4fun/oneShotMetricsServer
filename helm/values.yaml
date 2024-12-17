@@ -1,0 +1,31 @@
+# all these values are required
+serviceName: oneShotMetricsServer
+serviceNamespace: oneShotMetricsServer
+
+test-event:
+  image: docker.io/alpine/curl
+  tag: 8.10.0
+
+server:
+  image: ghcr.io/imuni4fun/one_shot_metrics_server
+  tag: v0.1.13
+  logLevel: INFO
+  port: 8080
+  resources:
+    requests:
+      cpu: 50m
+      memory: 100Mi
+    limits:
+      cpu: 500m
+      memory: 500Mi
+
+service:
+  port: 8090
+
+netpol:
+  generate: true
+  from:
+  - namespaceSelector:
+      matchLabels:
+        name: {{ .Values.serviceNamespace | required }}
+  

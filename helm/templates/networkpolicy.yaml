@@ -1,0 +1,18 @@
+{{ if .Values.netpol.generate }}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  labels:
+    app.kubernetes.io/name: {{ .Values.serviceName | required }}
+  name: "allow-{{ .Values.serviceName | required }}-ingress"
+  namespace: {{ .Values.serviceNamespace | required }}
+spec:
+  ingress:
+  - from:
+    {{ .Values.netpol.from | required | nindent 4 }}
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: {{ .Values.serviceName | required }}
+  policyTypes:
+  - Ingress
+{{ end }}

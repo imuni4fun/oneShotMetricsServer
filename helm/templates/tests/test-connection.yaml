@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    "helm.sh/hook": test
+  labels:
+    app.kubernetes.io/name: {{ .Values.serviceName | required }}
+  namespace: {{ .Values.serviceNamespace | required }}
+  name: test-connection
+spec:
+  containers:
+    - name: runner
+      image: "{{ .Values.test-event.image | required }}:{{ .Values.test-event.tag | required }}"
+      imagePullPolicy: IfNotPresent
+      command:
+      - /bin/sh
+      - -c
+      - curl "http://{{ .Values.serviceName | required }}.{{ .Values.serviceNamespace | required }}.svc.cluster.local:{{ .Values.service.port | required }}/event?type=test&message=helm_test" -X POST
+  restartPolicy: Never

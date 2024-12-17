@@ -1,0 +1,30 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  labels:
+    app.kubernetes.io/name: {{ .Values.serviceName | required }}
+  namespace: {{ .Values.serviceNamespace | required }}
+  name: test-event
+spec:
+  schedule: "* * * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          namespace: {{ .Values.serviceNamespace | required }}
+          labels:
+            app.kubernetes.io/name: {{ .Values.serviceName | required }}
+        spec:
+          containers:
+          - name: runner
+            image: "{{ .Values.test-event.image | required }}:{{ .Values.test-event.tag | required }}"
+            imagePullPolicy: IfNotPresent
+            command:
+            - /bin/sh
+            - -c
+            - curl "http://{{ .Values.serviceName | required }}.{{ .Values.serviceNamespace | required }}.svc.cluster.local:{{ .Values.service.port | required }}/event?type=test&message=cron_test" -X POST
+          restartPolicy: Never
+
