@@ -2,15 +2,17 @@ name: Release Charts
 
 on:
   push:
-    branches:
-      - main
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
 
 jobs:
+
   release:
+    name: Package helm chart and create release
     permissions:
       contents: write # to push chart release and create a release (helm/chart-releaser-action)
-
     runs-on: ubuntu-latest
+    
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
