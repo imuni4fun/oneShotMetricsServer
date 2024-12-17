@@ -1,4 +1,4 @@
-name: Release Charts
+name: Package Helm Charts
 
 on:
   push:
