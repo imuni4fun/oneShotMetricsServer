@@ -2,12 +2,12 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   labels:
-    app.kubernetes.io/name: {{ .Values.serviceName | required }}
-  name: {{ .Values.serviceName | required }}
+    app.kubernetes.io/name: {{ .Values.serviceName | required "serviceName is required" }}
+  name: {{ .Values.serviceName | required "serviceName is required" }}
 spec:
   namespaceSelector:
     matchNames:
-    - {{ .Values.serviceNamespace | required }}
+    - {{ .Values.serviceNamespace | required "serviceNamespace is required" }}
   endpoints:
   - interval: 30s
     path: /metrics
@@ -15,4 +15,4 @@ spec:
     scrapeTimeout: 10s
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ .Values.serviceName | required }}
+      app.kubernetes.io/name: {{ .Values.serviceName | required "serviceName is required" }}

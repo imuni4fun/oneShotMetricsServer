@@ -3,16 +3,18 @@ apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
   labels:
-    app.kubernetes.io/name: {{ .Values.serviceName | required }}
-  name: "allow-{{ .Values.serviceName | required }}-ingress"
-  namespace: {{ .Values.serviceNamespace | required }}
+    app.kubernetes.io/name: {{ .Values.serviceName | required "serviceName is required" }}
+  name: "allow-{{ .Values.serviceName | required "serviceName is required" }}-ingress"
+  namespace: {{ .Values.serviceNamespace | required "serviceNamespace is required" }}
 spec:
   ingress:
   - from:
-    {{ .Values.netpol.from | required | nindent 4 }}
+    - namespaceSelector:
+        matchLabels:
+          name: {{ .Values.serviceNamespace | required "serviceNamespace is required" }}
   podSelector:
     matchLabels:
-      app.kubernetes.io/name: {{ .Values.serviceName | required }}
+      app.kubernetes.io/name: {{ .Values.serviceName | required "serviceName is required" }}
   policyTypes:
   - Ingress
 {{ end }}

@@ -4,16 +4,16 @@ metadata:
   annotations:
     "helm.sh/hook": test
   labels:
-    app.kubernetes.io/name: {{ .Values.serviceName | required }}
-  namespace: {{ .Values.serviceNamespace | required }}
+    app.kubernetes.io/name: {{ .Values.serviceName | required "serviceName is required" }}
+  namespace: {{ .Values.serviceNamespace | required "serviceNamespace is required" }}
   name: test-connection
 spec:
   containers:
     - name: runner
-      image: "{{ .Values.test-event.image | required }}:{{ .Values.test-event.tag | required }}"
+      image: "{{ .Values.testEvent.image | required "testEvent.image is required" }}:{{ .Values.testEvent.tag | required "testEvent.tag is required" }}"
       imagePullPolicy: IfNotPresent
       command:
       - /bin/sh
       - -c
-      - curl "http://{{ .Values.serviceName | required }}.{{ .Values.serviceNamespace | required }}.svc.cluster.local:{{ .Values.service.port | required }}/event?type=test&message=helm_test" -X POST
+      - curl "http://{{ .Values.serviceName | required "serviceName is required" }}.{{ .Values.serviceNamespace | required "serviceNamespace is required" }}.svc.cluster.local:{{ .Values.service.port | required "service.port is required" }}/event?type=test&message=helm_test" -X POST
   restartPolicy: Never

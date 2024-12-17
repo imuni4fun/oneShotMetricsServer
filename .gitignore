@@ -25,4 +25,4 @@ go.work.sum
 pkg
 
 # binary
-oneShotMetricsServer
+./oneShotMetricsServer

@@ -1,6 +1,9 @@
 apiVersion: v2
 name: oneShotMetricsServer
-description: A Helm chart for Kubernetes
+description: A Helm chart for oneShotMetricsServer deployment to Kubernetes
 type: application
 version: "0.0.1"
 appVersion: "0.1.13"
+icon: https://github.com/imuni4fun/oneShotMetricsServer/blob/main/logo.png
+maintainers:
+  - name: Jason Keller

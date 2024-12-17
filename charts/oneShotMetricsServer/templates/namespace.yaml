@@ -2,5 +2,5 @@ apiVersion: v1
 kind: Namespace
 metadata:
   labels:
-    app.kubernetes.io/name: {{ .Values.serviceName | required }}
-  name: {{ .Values.serviceNamespace | required }}
+    app.kubernetes.io/name: {{ .Values.serviceName | required "serviceName is required" }}
+  name: {{ .Values.serviceNamespace | required "serviceNamespace is required" }}

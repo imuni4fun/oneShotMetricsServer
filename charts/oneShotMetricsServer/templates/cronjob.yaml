@@ -2,8 +2,8 @@ apiVersion: batch/v1
 kind: CronJob
 metadata:
   labels:
-    app.kubernetes.io/name: {{ .Values.serviceName | required }}
-  namespace: {{ .Values.serviceNamespace | required }}
+    app.kubernetes.io/name: {{ .Values.serviceName | required "serviceName is required" }}
+  namespace: {{ .Values.serviceNamespace | required "serviceNamespace is required" }}
   name: test-event
 spec:
   schedule: "* * * * *"
@@ -14,17 +14,17 @@ spec:
     spec:
       template:
         metadata:
-          namespace: {{ .Values.serviceNamespace | required }}
+          namespace: {{ .Values.serviceNamespace | required "serviceNamespace is required" }}
           labels:
-            app.kubernetes.io/name: {{ .Values.serviceName | required }}
+            app.kubernetes.io/name: {{ .Values.serviceName | required "serviceName is required" }}
         spec:
           containers:
           - name: runner
-            image: "{{ .Values.test-event.image | required }}:{{ .Values.test-event.tag | required }}"
+            image: "{{ .Values.testEvent.image | required "testEvent.image is required" }}:{{ .Values.testEvent.tag | required "testEvent.tag is required" }}"
             imagePullPolicy: IfNotPresent
             command:
             - /bin/sh
             - -c
-            - curl "http://{{ .Values.serviceName | required }}.{{ .Values.serviceNamespace | required }}.svc.cluster.local:{{ .Values.service.port | required }}/event?type=test&message=cron_test" -X POST
+            - curl "http://{{ .Values.serviceName | required "serviceName is required" }}.{{ .Values.serviceNamespace | required "serviceNamespace is required" }}.svc.cluster.local:{{ .Values.service.port | required "service.port is required" }}/event?type=test&message=cron_test" -X POST
           restartPolicy: Never
 

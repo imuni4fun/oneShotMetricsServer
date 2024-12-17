@@ -2,25 +2,25 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app.kubernetes.io/name: {{ .Values.serviceName | required }}
-  namespace: {{ .Values.serviceNamespace | required }}
-  name: {{ .Values.serviceName | required }}
+    app.kubernetes.io/name: {{ .Values.serviceName | required "serviceName is required" }}
+  namespace: {{ .Values.serviceNamespace | required "serviceNamespace is required" }}
+  name: {{ .Values.serviceName | required "serviceName is required" }}
 spec:
   replicas: 1
   revisionHistoryLimit: 1
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ .Values.serviceName | required }}
+      app.kubernetes.io/name: {{ .Values.serviceName | required "serviceName is required" }}
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: {{ .Values.serviceName | required }}
+        app.kubernetes.io/name: {{ .Values.serviceName | required "serviceName is required" }}
     spec:
       containers:
-      - image: "{{ .Values.server.image | required }}:{{ .Values.server.tag | required }}"
+      - image: "{{ .Values.server.image | required "server.image is required" }}:{{ .Values.server.tag | required "server.tag is required" }}"
         env:
         - name: LOG_LEVEL
-          value: {{ .Values.server.logLevel | required }}
+          value: {{ .Values.server.logLevel | required "server.logLevel is required" }}
         imagePullPolicy: IfNotPresent
         name: web-server
         livenessProbe:
@@ -32,8 +32,8 @@ spec:
           periodSeconds: 60
           timeoutSeconds: 10
         ports:
-        - containerPort: {{ .Values.server.port | required }}
+        - containerPort: {{ .Values.server.port | required "server.port is required" }}
           name: metrics
           protocol: TCP
         resources:
-          {{- toYaml .Values.server.resources | required | nindent 10 }}
+          {{- toYaml .Values.server.resources | required "server.resources is required" | nindent 10 }}

@@ -1,8 +1,8 @@
 # all these values are required
-serviceName: oneShotMetricsServer
-serviceNamespace: oneShotMetricsServer
+serviceName: oneshotmetricsserver
+serviceNamespace: oneshotmetricsserver
 
-test-event:
+testEvent:
   image: docker.io/alpine/curl
   tag: 8.10.0
 
@@ -25,7 +25,4 @@ service:
 netpol:
   generate: true
   from:
-  - namespaceSelector:
-      matchLabels:
-        name: {{ .Values.serviceNamespace | required }}
   
