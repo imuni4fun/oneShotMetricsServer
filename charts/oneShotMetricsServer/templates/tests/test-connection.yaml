@@ -8,6 +8,8 @@ metadata:
   namespace: {{ .Values.serviceNamespace | required "serviceNamespace is required" }}
   name: test-connection
 spec:
+  activeDeadlineSeconds: 40
+  terminationGracePeriodSeconds: 5
   containers:
     - name: runner
       image: "{{ .Values.testEvent.image | required "testEvent.image is required" }}:{{ .Values.testEvent.tag | required "testEvent.tag is required" }}"
