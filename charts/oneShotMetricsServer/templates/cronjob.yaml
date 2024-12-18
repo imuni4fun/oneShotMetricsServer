@@ -12,12 +12,17 @@ spec:
   failedJobsHistoryLimit: 1
   jobTemplate:
     spec:
+      activeDeadlineSeconds: 50
+      parallelism: 1
+      backoffLimit: 1
       template:
         metadata:
           namespace: {{ .Values.serviceNamespace | required "serviceNamespace is required" }}
           labels:
             app.kubernetes.io/name: {{ .Values.serviceName | required "serviceName is required" }}
         spec:
+          activeDeadlineSeconds: 40
+          terminationGracePeriodSeconds: 5
           containers:
           - name: runner
             image: "{{ .Values.testEvent.image | required "testEvent.image is required" }}:{{ .Values.testEvent.tag | required "testEvent.tag is required" }}"
