@@ -3,4 +3,5 @@ kind: Namespace
 metadata:
   labels:
     app.kubernetes.io/name: {{ .Values.serviceName | required "serviceName is required" }}
+    name: {{ .Values.serviceNamespace | required "serviceNamespace is required" }}
   name: {{ .Values.serviceNamespace | required "serviceNamespace is required" }}
