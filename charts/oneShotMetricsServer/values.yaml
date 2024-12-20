@@ -24,5 +24,7 @@ service:
 
 netpol:
   generate: true
-  from:
+  ingress:
+    allowedNamespaceMatchLabels: []
+    allowedPodMatchLabels: []
   

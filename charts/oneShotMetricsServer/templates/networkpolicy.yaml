@@ -1,4 +1,4 @@
-{{ if .Values.netpol.generate }}
+{{ if ((.Values.netpol).generate) | default false }}
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
@@ -12,9 +12,16 @@ spec:
     - namespaceSelector:
         matchLabels:
           name: {{ .Values.serviceNamespace | required "serviceNamespace is required" }}
-  podSelector:
-    matchLabels:
-      app.kubernetes.io/name: {{ .Values.serviceName | required "serviceName is required" }}
+    {{- range $ns := (.Values.netpol.ingress).allowedNamespaceMatchLabels }}
+    - namespaceSelector:
+        matchLabels:
+          name: {{ $ns | required "netpol.ingress.allowedNamespaceMatchLabels must be valid" }}
+    {{- end }}
+    {{- range $ns := (.Values.netpol.ingress).allowedPodMatchLabels }}
+    - podSelector:
+        matchLabels:
+          name: {{ $ns | required "netpol.ingress.allowedPodMatchLabels must be valid" }}
+    {{- end }}
   policyTypes:
   - Ingress
 {{ end }}
