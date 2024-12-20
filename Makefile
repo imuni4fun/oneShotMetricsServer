@@ -1,5 +1,5 @@
 GIT_TAG:=$(shell git describe --tags --dirty --always)
-GHCR:=ghcr.io/imuni4fun/one_shot_metrics_server
+GHCR:=ghcr.io/imuni4fun/one-shot-metrics-server
 
 setup:
 	go get goyave.dev/goyave/v5@v5.4.0
