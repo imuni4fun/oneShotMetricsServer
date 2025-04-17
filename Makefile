@@ -3,7 +3,7 @@ GHCR:=ghcr.io/imuni4fun/one-shot-metrics-server
 
 setup:
 	go get goyave.dev/goyave/v5@v5.4.0
-	go get github.com/imuni4fun/fadingMetricsCache@v0.0.4
+	go get github.com/imuni4fun/fadingMetricsCache@v0.0.6
 	
 build: setup
 	go build .

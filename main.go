@@ -20,6 +20,9 @@ import (
 
 var cache = fadingMetricsCache.FadingMetricsCache{}
 var eventCounter atomic.Int64
+var useExplicitTimestamps = false
+
+const flagUseExplicitTimestamps = "USE_EXPLICIT_TIMESTAMPS"
 
 func main() {
 	switch os.Getenv("LOG_LEVEL") {
@@ -33,11 +36,16 @@ func main() {
 		slog.SetLogLoggerLevel(slog.LevelDebug)
 	default:
 	}
+
+	useExplicitTimestamps = strings.ToLower(os.Getenv(flagUseExplicitTimestamps)) == "true"
+
 	runServer(context.Background())
 }
 
 func runServer(ctx context.Context) {
 	cache.Configure(ctx, 10*time.Minute, 5, 10000)
+
+	logInfof("Using explicit timestamps: %t", useExplicitTimestamps)
 
 	cfg, err := config.Load()
 	if err != nil {
@@ -113,15 +121,15 @@ func handlePostEvent(response *goyave.Response, request *goyave.Request) {
 		if floatVal, useAsValue := tryParseValueAsFloat(k, v); useAsValue { // interpret as value
 			value = floatVal
 			logDebugf("value : %v\n", floatVal)
-		} else { // interpret as label
-			labels[k] = v[0]
+		} else { // interpret as label (no spaces allowed in label name)
+			labels[strings.ReplaceAll(k, " ", "_")] = v[0]
 			logDebugf("label : %v: %v\n", k, v[0])
 		}
 	}
 	for k, v := range request.Header() {
 		logDebugf("header : %s = %s\n", k, v)
 	}
-	cache.RegisterValue("events_to_metrics", labels, value)
+	cache.RegisterValue("events_to_metrics", labels, value, useExplicitTimestamps)
 	eventCounter.Add(1)
 	response.Status(http.StatusOK)
 }
@@ -152,13 +160,21 @@ func handleGetMetrics(response *goyave.Response, request *goyave.Request) {
 	// events_to_metrics{method="post",code="200"} $value $timestamp
 	fmt.Fprintf(&sb, "# HELP events_to_metrics_event_count Scrapers currently being tracked and the events they have yet to collect\n")
 	fmt.Fprintf(&sb, "# TYPE events_to_metrics_event_count counter\n")
-	fmt.Fprintf(&sb, "events_to_metrics_event_count{} %d %d\n", eventCounter.Load(), now)
+	if useExplicitTimestamps {
+		fmt.Fprintf(&sb, "events_to_metrics_event_count{} %d %d\n", eventCounter.Load(), now)
+	} else {
+		fmt.Fprintf(&sb, "events_to_metrics_event_count{} %d\n", eventCounter.Load())
+	}
 	counts := cache.GetScraperEntryCounts()
 	if len(counts) > 0 {
 		fmt.Fprintf(&sb, "# HELP events_to_metrics_scraper_counts Scrapers currently being tracked and the events they have yet to collect\n")
 		fmt.Fprintf(&sb, "# TYPE events_to_metrics_scraper_counts gauge\n")
 		for k, v := range counts {
-			fmt.Fprintf(&sb, "events_to_metrics_scraper_counts{scraper=\"%s\"} %d %d\n", k, v, now)
+			if useExplicitTimestamps {
+				fmt.Fprintf(&sb, "events_to_metrics_scraper_counts{scraper=\"%s\"} %d %d\n", k, v, now)
+			} else {
+				fmt.Fprintf(&sb, "events_to_metrics_scraper_counts{scraper=\"%s\"} %d\n", k, v)
+			}
 		}
 	}
 	metrics := cache.Scrape(scraper)

@@ -21,6 +21,8 @@ spec:
         env:
         - name: LOG_LEVEL
           value: {{ .Values.server.logLevel | required "server.logLevel is required" }}
+        - name: USE_EXPLICIT_TIMESTAMPS
+          value: {{ .Values.server.useExplicitTimestamps | required "server.useExplicitTimestamps is required" | quote }}
         imagePullPolicy: IfNotPresent
         name: web-server
         livenessProbe:

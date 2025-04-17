@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"strconv"
 	"strings"
 	"testing"
 	"time"
@@ -158,6 +159,76 @@ func TestParseScraper(t *testing.T) {
 		}, "Unsupported address %s should panic", str)
 		logInfof("address %s --> should panic", str)
 	}
+}
+
+// description of test
+func TestTimestampEnabled(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	go func() {
+		useExplicitTimestamps = true
+		runServer(ctx)
+	}()
+	time.Sleep(1 * time.Second)
+
+	httpGetMetrics() // register scraper
+	httpPostEvent(map[string]string{
+		"type":   "testResult",
+		"result": "pass",
+		"value":  "42.5",
+	})
+	result := httpGetMetrics()
+
+	foundResult := false
+	for _, str := range result {
+		// logInfof("considering: %v", str)
+		if strings.Contains(str, "42.5") {
+			segments := strings.Split(str, " ")
+			// logInfof("segments: %v", segments)
+			if len(segments) == 3 && strings.HasPrefix(segments[1], "42.5") {
+				if _, err := strconv.ParseInt(segments[2], 10, 64); err == nil {
+					logInfof("found properly formatted value with timestamp")
+					foundResult = true
+				}
+			}
+		}
+	}
+	assert.True(t, foundResult, "should find properly formatted result")
+}
+
+// description of test
+func TestTimestampDisabled(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	go func() {
+		useExplicitTimestamps = false
+		runServer(ctx)
+	}()
+	time.Sleep(1 * time.Second)
+
+	httpGetMetrics() // register scraper
+	httpPostEvent(map[string]string{
+		"type":   "testResult",
+		"result": "pass",
+		"value":  "42.5",
+	})
+	result := httpGetMetrics()
+
+	foundResult := false
+	for _, str := range result {
+		// logInfof("considering: %v", str)
+		if strings.Contains(str, "42.5") {
+			segments := strings.Split(str, " ")
+			// logInfof("segments: %v", segments)
+			if len(segments) == 2 && strings.HasPrefix(segments[1], "42.5") {
+				logInfof("found properly formatted value without timestamp")
+				foundResult = true
+			}
+		}
+	}
+	assert.True(t, foundResult, "should find properly formatted result")
 }
 
 func httpPostEvent(content map[string]string) {
