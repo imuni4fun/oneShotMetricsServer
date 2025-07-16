@@ -82,3 +82,7 @@ helm test events-to-metrics
 ```
  kubectl run --image alpine/curl:8.10.0 test --command -- sh -c 'while true;do TMP=$(date | cut -d ":" -f 3 | cut -d " " -f 1) && curl "http://K8S_SVC.K8S_NS.svc.cluster.local:8090/event?type=test&message=cron_test_manual&seconds=$TMP" -X POST -vv;sleep 1;done'
 ```
+
+## Maintainers
+
+See [release doc](./docs/release.md) for procedures.
