@@ -2,6 +2,19 @@ apiVersion: v1
 entries:
   oneShotMetricsServer:
   - apiVersion: v2
+    appVersion: v0.1.18
+    created: "2025-07-16T08:51:29.892256819Z"
+    description: A Helm chart for oneShotMetricsServer deployment to Kubernetes
+    digest: f3e4efc2a5ad6984804fc1d64e71a1994d702f7cb5e66d45c95a6b73ef84aa55
+    icon: https://imuni4fun.github.io/oneShotMetricsServer/logo.png
+    maintainers:
+    - name: Jason Keller
+    name: oneShotMetricsServer
+    type: application
+    urls:
+    - https://github.com/imuni4fun/oneShotMetricsServer/releases/download/oneShotMetricsServer-v0.0.10/oneShotMetricsServer-v0.0.10.tgz
+    version: v0.0.10
+  - apiVersion: v2
     appVersion: v0.1.17
     created: "2025-04-18T00:24:28.792466638Z"
     description: A Helm chart for oneShotMetricsServer deployment to Kubernetes
@@ -105,4 +118,4 @@ entries:
     urls:
     - https://github.com/imuni4fun/oneShotMetricsServer/releases/download/oneShotMetricsServer-0.0.2/oneShotMetricsServer-0.0.2.tgz
     version: 0.0.2
-generated: "2025-04-18T00:24:28.792523384Z"
+generated: "2025-07-16T08:51:29.892292937Z"
