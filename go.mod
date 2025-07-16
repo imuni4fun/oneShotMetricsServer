@@ -1,6 +1,6 @@
 module oneShotMetricsServer
 
-go 1.22.2
+go 1.24.5
 
 require (
 	github.com/imuni4fun/fadingMetricsCache v0.0.6
