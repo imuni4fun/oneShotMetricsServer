@@ -1,4 +1,4 @@
-FROM golang:alpine3.20 as builder
+FROM golang:1.24.5-alpine3.22 AS builder
 ARG GITUSER
 ARG GITPAT
 
@@ -11,7 +11,7 @@ COPY . .
 RUN go build .
 
 
-FROM alpine:3.20 as runner
+FROM alpine:3.22 AS runner
 LABEL org.opencontainers.image.source=https://github.com/imuni4fun/oneShotMetricsServer
 LABEL org.opencontainers.image.description="Runner image for Events to Metrics server"
 LABEL org.opencontainers.image.licenses=GPLv3
