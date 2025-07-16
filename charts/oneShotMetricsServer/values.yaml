@@ -4,11 +4,11 @@ serviceNamespace: oneshotmetricsserver
 
 testEvent:
   image: docker.io/alpine/curl
-  tag: 8.10.0
+  tag: 8.14.1
 
 server:
   image: ghcr.io/imuni4fun/one-shot-metrics-server
-  tag: v0.1.17
+  tag: v0.1.18
   logLevel: INFO
   port: 8080
   useExplicitTimestamps: false
